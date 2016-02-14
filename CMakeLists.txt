@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rgbd_util)
+project(rgbd_camera_util)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -101,7 +101,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES rgbd_util
+#  LIBRARIES rgbd_camera_util
 #  CATKIN_DEPENDS roscpp rospy tf
 #  DEPENDS system_lib
 )
@@ -118,24 +118,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(rgbd_util
-#   src/${PROJECT_NAME}/rgbd_util.cpp
+# add_library(rgbd_camera_util
+#   src/${PROJECT_NAME}/rgbd_camera_util.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(rgbd_util ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(rgbd_camera_util ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(rgbd_util_node src/rgbd_util_node.cpp)
+# add_executable(rgbd_camera_util_node src/rgbd_camera_util_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(rgbd_util_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(rgbd_camera_util_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(rgbd_util_node
+# target_link_libraries(rgbd_camera_util_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -154,7 +154,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS rgbd_util rgbd_util_node
+# install(TARGETS rgbd_camera_util rgbd_camera_util_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -179,7 +179,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_rgbd_util.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_rgbd_camera_util.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

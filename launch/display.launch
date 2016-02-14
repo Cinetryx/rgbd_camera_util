@@ -9,7 +9,7 @@
 
   <!-- Camera URDF -->
   <param name="camera_description" command="$(find xacro)/xacro 
-    '$(find rgbd_util)/urdf/$(arg model_type).urdf.xacro' 
+    '$(find rgbd_camera_util)/urdf/$(arg model_type).urdf.xacro' 
     parent:='$(arg parent)'
     urdf_attached:='$(arg urdf_attached)'" />
 
