@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="kinect" xmlns:xacro="http://ros.org/wiki/xacro">
-  
+
   <xacro:include filename="$(find rgbd_camera_util)/urdf/common.xacro" />
 
   <!-- Default values -->
@@ -13,7 +13,7 @@
 
   <xacro:macro name="kinect" params="parent:=${def_parent} xyz:=${def_xyz}
     rpy:=${def_rpy} name:=${def_name} prefix:=${def_prefix} urdf_attached:=${def_urdf_attached}">
-    
+
     <xacro:unless value="${urdf_attached}">
       <link name="${parent}" />
     </xacro:unless>
