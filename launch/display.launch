@@ -1,0 +1,29 @@
+<launch>
+  
+  <arg name="use_gui" default="true" />
+  <arg name="model_type" default="kinect" />
+  <arg name="rate" default="30" />
+
+  <arg name="parent" default="sensor_base" />
+  <arg name="urdf_attached" default="false" />
+
+  <!-- Camera URDF -->
+  <param name="camera_description" command="$(find xacro)/xacro 
+    '$(find rgbd_util)/urdf/$(arg model_type).urdf.xacro' 
+    parent:='$(arg parent)'
+    urdf_attached:='$(arg urdf_attached)'" />
+
+  <!-- Static transform between fixed frame (map) and sensor base -->
+  <node unless="$(arg urdf_attached)" pkg="tf" type="static_transform_publisher" name="$(arg parent)_static_tf"
+    args="0 0 0 0 0 0 map $(arg parent) $(arg rate)" />
+
+  <!--  Publish model TF frames-->
+  <node name="$(arg model_type)_state_publisher" pkg="robot_state_publisher" type="state_publisher">
+    <param name="publish_frequency" value="$(arg rate)" />
+    <remap from="robot_description" to="camera_description" />
+  </node>
+  
+  <!-- Open Rviz -->
+  <node if="$(arg use_gui)" name="rviz" pkg="rviz" type="rviz" output="screen" />
+
+</launch>

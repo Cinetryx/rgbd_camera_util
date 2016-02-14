@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<robot name="kinect" xmlns:xacro="http://ros.org/wiki/xacro">
+  
+  <xacro:include filename="$(find rgbd_util)/urdf/common.xacro" />
+
+  <!-- Default values -->
+  <xacro:property name="def_parent" value="$(arg parent)" />
+  <xacro:property name="def_urdf_attached" value="$(arg urdf_attached)" />
+  <xacro:property name="def_xyz" value="0 0 0" />
+  <xacro:property name="def_rpy" value="0 0 0" />
+  <xacro:property name="def_name" value="" />
+  <xacro:property name="def_prefix" value="" />
+
+  <xacro:macro name="kinect" params="parent:=${def_parent} xyz:=${def_xyz}
+    rpy:=${def_rpy} name:=${def_name} prefix:=${def_prefix} urdf_attached:=${def_urdf_attached}">
+    
+    <xacro:unless value="${urdf_attached}">
+      <link name="${parent}" />
+    </xacro:unless>
+
+    <joint name="${name}camera_joint" type="fixed">
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+      <parent link="${parent}"/>
+      <child link="${prefix}${name}link"/>
+    </joint>
+
+    <link name="${prefix}${name}link">
+      <visual>
+       <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+        <geometry>
+         <mesh filename="package://rgbd_util/meshes/kinect.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.07271 0.27794 0.073"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.564" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
+                 iyy="0.000498940" iyz="0.0"
+                 izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <joint name="${name}camera_rgb_joint" type="fixed">
+      <origin xyz="0.031 0.0125 0.016" rpy="0 0 0"/>
+      <parent link="${prefix}${name}link"/>
+      <child link="${prefix}${name}rgb_frame"/>
+    </joint>
+    <link name="${prefix}${name}rgb_frame"/>
+
+    <joint name="${name}camera_rgb_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="${prefix}${name}rgb_frame" />
+      <child link="${prefix}${name}rgb_optical_frame" />
+    </joint>
+    <link name="${prefix}${name}rgb_optical_frame"/>
+
+    <joint name="${name}camera_depth_joint" type="fixed">
+      <origin xyz="0 -0.025 0" rpy="0 0 0" />
+      <parent link="${prefix}${name}rgb_frame" />
+      <child link="${prefix}${name}depth_frame" />
+    </joint>
+    <link name="${prefix}${name}depth_frame"/>
+
+    <joint name="${name}camera_depth_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+      <parent link="${prefix}${name}depth_frame" />
+      <child link="${prefix}${name}depth_optical_frame" />
+    </joint>
+    <link name="${prefix}${name}depth_optical_frame"/>
+
+  </xacro:macro>
+
+  <!-- Kinect macro instance -->
+  <xacro:kinect parent="$(arg parent)" />
+
+</robot>
