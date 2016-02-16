@@ -37,7 +37,7 @@ class TFMarkerServer():
         rospy.Timer(rospy.Duration(1/rate), self.publish_transform)
 
 
-    def add6DOF(self, init_position = Point( 0.0, 0.0, 0.0), frame_id = 'base_link'):
+    def add6DOF(self, init_position = Point( 0.0, 0.0, 0.0), frame_id = 'map'):
         marker = InteractiveMarker()
         marker.header.frame_id = frame_id
         marker.pose.position = init_position
@@ -108,7 +108,7 @@ class TFMarkerServer():
         time = rospy.Time.now()
         self.pose_mutex.acquire()
         self.tf.sendTransform(self.marker_position, self.marker_orientation,
-            time, 'moving_frame', 'base_link')
+            time, 'sensor_base', 'map')
         self.pose_mutex.release()
 
     def marker_feedback(self, feedback):

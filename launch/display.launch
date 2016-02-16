@@ -6,6 +6,7 @@
 
   <arg name="parent" default="sensor_base" />
   <arg name="urdf_attached" default="false" />
+  <arg name="dynamic" default="true" />
 
   <!-- Camera URDF -->
   <param name="camera_description" command="$(find xacro)/xacro 
@@ -14,8 +15,11 @@
     urdf_attached:='$(arg urdf_attached)'" />
 
   <!-- Static transform between fixed frame (map) and sensor base -->
-  <node unless="$(arg urdf_attached)" pkg="tf" type="static_transform_publisher" name="$(arg parent)_static_tf"
+  <node unless="$(arg dynamic)" pkg="tf" type="static_transform_publisher" name="$(arg parent)_static_tf"
     args="0 0 0 0 0 0 map $(arg parent) $(arg rate)" />
+
+  <!-- Marker based transform between fixed frame (map) and sensor base -->
+  <node if="$(arg dynamic)" pkg="rgbd_camera_util" type="tf_marker.py" name="$(arg parent)_marker_tf" />
 
   <!--  Publish model TF frames-->
   <node name="$(arg model_type)_state_publisher" pkg="robot_state_publisher" type="state_publisher">
