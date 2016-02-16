@@ -1,25 +1,39 @@
 <?xml version="1.0"?>
-<robot name="sensor_asus_xtion_pro" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="asus" xmlns:xacro="http://ros.org/wiki/xacro">
   
-  <xacro:include filename="$(find rgbd_camera_util)/common.xacro" />
+  <xacro:include filename="$(find rgbd_camera_util)/urdf/common.xacro" />
 
-  <!-- Xacro properties -->
+  <!-- ASUS properties -->
   <xacro:property name="M_SCALE" value="0.001"/>
   <xacro:property name="asus_xtion_pro_depth_rel_rgb_py" value="0.0270" />
   <xacro:property name="asus_xtion_pro_cam_rel_rgb_py"   value="-0.0220" />
 
+  <!-- Default values -->
+  <xacro:property name="def_parent" value="$(arg parent)" />
+  <xacro:property name="def_urdf_attached" value="$(arg urdf_attached)" />
+  <xacro:property name="def_xyz" value="0 0 0" />
+  <xacro:property name="def_rpy" value="0 0 0" />
+  <xacro:property name="def_name" value="" />
+  <xacro:property name="def_prefix" value="" />
+
   
-  <xacro:macro name="sensor_asus_xtion_pro" params="prefix name parent">
-    <joint name="${name}_camera_joint" type="fixed">
-      <origin xyz="0.1 0 0.04" 
-              rpy="0 0 0"/>
+  <xacro:macro name="asus" params="parent:=${def_parent} xyz:=${def_xyz}
+    rpy:=${def_rpy} name:=${def_name} prefix:=${def_prefix} urdf_attached:=${def_urdf_attached}">
+
+    <xacro:unless value="${urdf_attached}">
+      <link name="${parent}" />
+    </xacro:unless>
+
+    <joint name="${name}camera_joint" type="fixed">
+      <origin xyz="0.0 0.0 0.0" 
+              rpy="0.0 0.0 0.0"/>
       <parent link="${parent}"/>
-      <child link="${prefix}${name}_link" />
+      <child link="${prefix}${name}link" />
     </joint>
     
-    <link name="${prefix}${name}_link">
+    <link name="${prefix}${name}link">
       <visual>
-        <origin xyz="-0.01 0 0" rpy="${-M_PI/2} -${M_PI} ${-M_PI/2}"/>
+        <origin xyz="0 0 0" rpy="${-M_PI/2} -${M_PI} ${-M_PI/2}"/>
         <geometry>
           <mesh filename="package://rgbd_camera_util/meshes/asus_xtion_pro_live.dae" scale="${M_SCALE} ${M_SCALE} ${M_SCALE}"/>
         </geometry>
@@ -38,34 +52,38 @@
       </inertial>
     </link>
     
-    <joint name="${name}_camera_rgb_joint" type="fixed">
+    <joint name="${name}camera_rgb_joint" type="fixed">
       <origin xyz="0 ${-asus_xtion_pro_cam_rel_rgb_py} 0" 
               rpy="0 0 0"/>
-      <parent link="${prefix}${name}_link"/>
-      <child link="${prefix}${name}_rgb_frame"/>
+      <parent link="${prefix}${name}link"/>
+      <child link="${prefix}${name}rgb_frame"/>
     </joint>
-    <link name="${prefix}${name}_rgb_frame"/>
+    <link name="${prefix}${name}rgb_frame"/>
     
-    <joint name="${name}_camera_rgb_optical_joint" type="fixed">
+    <joint name="${name}camera_rgb_optical_joint" type="fixed">
       <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="${prefix}${name}_rgb_frame" />
-      <child link="${prefix}${name}_rgb_optical_frame" />
+      <parent link="${prefix}${name}rgb_frame" />
+      <child link="${prefix}${name}rgb_optical_frame" />
     </joint>
-    <link name="${prefix}${name}_rgb_optical_frame"/>
+    <link name="${prefix}${name}rgb_optical_frame"/>
 
-    <joint name="${name}_camera_depth_joint" type="fixed">
+    <joint name="${name}camera_depth_joint" type="fixed">
       <origin xyz="0 ${asus_xtion_pro_depth_rel_rgb_py} 0" rpy="0 0 0" />
-      <parent link="${prefix}${name}_rgb_frame" />
-      <child link="${prefix}${name}_depth_frame" />
+      <parent link="${prefix}${name}rgb_frame" />
+      <child link="${prefix}${name}depth_frame" />
     </joint>
-    <link name="${prefix}${name}_depth_frame"/>
+    <link name="${prefix}${name}depth_frame"/>
 
-    <joint name="${name}_camera_depth_optical_joint" type="fixed">
+    <joint name="${name}camera_depth_optical_joint" type="fixed">
       <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
-      <parent link="${prefix}${name}_depth_frame" />
-      <child link="${prefix}${name}_depth_optical_frame" />
+      <parent link="${prefix}${name}depth_frame" />
+      <child link="${prefix}${name}depth_optical_frame" />
     </joint>
-    <link name="${prefix}${name}_depth_optical_frame"/>
+    <link name="${prefix}${name}depth_optical_frame"/>
 
   </xacro:macro>
+
+  <!-- ASUS macro instance -->
+  <xacro:asus parent="$(arg parent)" />
+
 </robot>
