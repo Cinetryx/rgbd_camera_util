@@ -15,7 +15,7 @@ from visualization_msgs.msg import (InteractiveMarkerControl, InteractiveMarker,
 from geometry_msgs.msg import Point
 from tf.broadcaster import TransformBroadcaster
 from threading import Lock
-
+from optparse import OptionParser
 
 class TFMarkerServer():
     """TFMarkerServer"""
@@ -31,13 +31,13 @@ class TFMarkerServer():
         self.marker_orientation = (0.0, 0.0, 0.0, 1.0)
 
         # Add marker
-        self.add6DOF()
+        self.add_6DOF()
 
         # Timer for TF broadcaster
-        rospy.Timer(rospy.Duration(1/rate), self.publish_transform)
+        rospy.Timer(rospy.Duration(1.0/rate), self.publish_transform)
 
 
-    def add6DOF(self, init_position = Point( 0.0, 0.0, 0.0), frame_id = 'map'):
+    def add_6DOF(self, init_position = Point( 0.0, 0.0, 0.0), frame_id = 'map'):
         marker = InteractiveMarker()
         marker.header.frame_id = frame_id
         marker.pose.position = init_position
@@ -126,8 +126,18 @@ class TFMarkerServer():
                 feedback.pose.orientation.w)
             self.pose_mutex.release()
 
-
-if __name__ == "__main__":
+def main():
     rospy.init_node('camera_tf')
+    parser = OptionParser()
+    parser.add_option('-f', '--file', dest='filename', type="string",
+        help='File for write last config')
+    
+    (options, args) = parser.parse_args()
+    if options.filename:
+        rospy.loginfo('Using file: ' + options.filename)
+    
     marker_server = TFMarkerServer()
     rospy.spin()
+
+if __name__ == "__main__":
+    main()
