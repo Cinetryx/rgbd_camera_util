@@ -19,7 +19,7 @@
     args="0 0 0 0 0 0 map $(arg parent) $(arg rate)" />
 
   <!-- Marker based transform between fixed frame (map) and sensor base -->
-  <node if="$(arg dynamic)" pkg="rgbd_camera_util" type="tf_marker.py" name="$(arg parent)_marker_tf" />
+  <node if="$(arg dynamic)" pkg="rgbd_camera_util" type="tf_marker.py" name="$(arg parent)_marker_tf" args="-f $(find rgbd_camera_util)/config/init_position.yaml" output="screen" />
 
   <!--  Publish model TF frames-->
   <node name="$(arg model_type)_state_publisher" pkg="robot_state_publisher" type="state_publisher">

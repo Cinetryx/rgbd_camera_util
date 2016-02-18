@@ -16,10 +16,11 @@ from geometry_msgs.msg import Point
 from tf.broadcaster import TransformBroadcaster
 from threading import Lock
 from optparse import OptionParser
+import yaml
 
-class TFMarkerServer():
+class TFMarkerServer(object):
     """TFMarkerServer"""
-    def __init__(self, rate = 30.0):
+    def __init__(self, rate = 30.0, filename = None):
         # Marker server
         self.server = InteractiveMarkerServer('camera_marker')
         # TF broadcaster
@@ -29,6 +30,17 @@ class TFMarkerServer():
         self.pose_mutex = Lock()
         self.marker_position = (0.0, 0.0, 0.0)
         self.marker_orientation = (0.0, 0.0, 0.0, 1.0)
+
+        # Load init position
+        self.filename = filename
+        if self.filename:
+            with open(self.filename, 'r') as stream:
+                init_data = yaml.load(stream)['init_position']
+                self.marker_position = (init_data['x'], init_data['y'], init_data['z'])
+                self.marker_orientation = (0.0, 0.0, 0.0, 1.0)
+
+        # Register shutdown callback
+        rospy.on_shutdown(self.shutdown) 
 
         # Add marker
         self.add_6DOF()
@@ -126,6 +138,23 @@ class TFMarkerServer():
                 feedback.pose.orientation.w)
             self.pose_mutex.release()
 
+    def shutdown(self):
+        data = {
+            'init_position' :
+            {
+                'x': 0.0,
+                'y': 0.0,
+                'z': 5.0,
+                'roll': 0.0,
+                'pitch': 0.0,
+                'yaw': 0.0,
+            }
+
+        }
+        rospy.loginfo('Writing current position')
+        with open(self.filename, 'w') as outfile:
+            outfile.write(yaml.dump(data, default_flow_style=True))
+
 def main():
     rospy.init_node('camera_tf')
     parser = OptionParser()
@@ -136,7 +165,7 @@ def main():
     if options.filename:
         rospy.loginfo('Using file: ' + options.filename)
     
-    marker_server = TFMarkerServer()
+    marker_server = TFMarkerServer(filename=options.filename)
     rospy.spin()
 
 if __name__ == "__main__":
